@@ -1,23 +1,34 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
 
 namespace InterfacesCalico
 {
     class Program
     {
+        public static SqlConnection openConnection()
+        {
+            ConnectionStringSettings mySQLConSettings = ConfigurationManager.ConnectionStrings["database"];
+            SqlConnection mySQLConn = new SqlConnection(mySQLConSettings.ConnectionString);
+            mySQLConn.Open();
+            return mySQLConn;
+        }
+
         static void Main(string[] args)
         {
-            /*if (args.Length == 0)
-            {
-                System.Console.WriteLine("Por favor ingresar los dos parametros: interface [loggin]");
-                return;
-            }*/
+            SqlConnection mySQLConn = openConnection();
 
-            //System.Console.WriteLine("Interface: " + args[0]);
-            //System.Console.WriteLine("Fecha: " + args[1]);
-            //System.Console.WriteLine("Logging: " + args[2]); 
-            //String fecha = args[1];
+            SqlCommand mySQLCommand = new SqlCommand("select * from HIJOS", mySQLConn);
+            SqlDataReader mySQLDataReader = mySQLCommand.ExecuteReader();
+            mySQLDataReader.Read();
+            String valor = mySQLDataReader[0].ToString();
+            System.Console.WriteLine("Valor: " + valor);
+            mySQLConn.Close();
+
+
             String fecha = "2011804";
             // HttpWebRequest request = WebRequest.Create("http://localhost:8080/OSDEPYM/obtenerClientes?fecha=" + fecha) as HttpWebRequest;
             // http://localhost:8080/calico/rest/message/"texto"
